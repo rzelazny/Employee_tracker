@@ -31,40 +31,51 @@ function promptUser() {
         type: "list",
         message: "What would you like to do?",
         choices: [
-            "Find a specific song",
+            "Check existing data",
+            "Update employee data",
             "Exit"
         ]
     })
     .then(function(response) {
         // based on their answer, either call the bid or the post functions
         switch(response.action){
-            case "Find a specific song":
-
+            case "Check existing data":
+                getData();
+            break;
+            case "Update employee data":
+                updateData();
             break;
             default:
                 connection.end();
         }
     });
-}
+};
 
-// function findArtistSongs () {
-//     inquirer.prompt([{
-//         type: "input",
-//         message: "What artist do you want to search for?",
-//         name: "artist"
-//     }
-//     ])
-//     .then(function(response){
-//         connection.query("SELECT * FROM top5000 WHERE ?",
-//         [{
-//             artist: response.artist
-//         }],
-//         function(err, result){
-//             if(err) throw err;
-//             result.forEach(row => {
-//                 console.log(`Song: ${row.song} Release || Date: ${row.year}`)
-//             });
-//             promptUser();
-//         })
-//     })
-// };
+function getData () {
+    inquirer.prompt([{
+        type: "list",
+        message: "What data are you looking for?",
+        choices: [
+            "Employee",
+            "Department"
+        ],
+        name: "choice"
+    }
+    ])
+    .then(function(response){
+        connection.query("SELECT * FROM department WHERE ?",
+        [{
+            id: 1
+        }],
+        function(err, result){
+            
+            if(err) throw err;
+
+            promptUser();
+        })
+    })
+};
+
+function updateData (){
+
+};
