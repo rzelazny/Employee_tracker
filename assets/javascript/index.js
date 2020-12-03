@@ -31,8 +31,10 @@ function promptUser() {
         type: "list",
         message: "What would you like to do?",
         choices: [
-            "Check existing data",
-            "Update employee data",
+            "View current data",
+            "Update existing data",
+            "Create new data",
+            "Delete existing data",
             "Exit"
         ]
     })
@@ -45,6 +47,10 @@ function promptUser() {
             case "Update employee data":
                 updateData();
             break;
+            case "Create new data":
+                addData();
+            case "Delete existing data":
+                deleteData();
             default:
                 connection.end();
         }
