@@ -1,28 +1,8 @@
-const mysql = require ("mysql");
 const inquirer = require ("inquirer");
 const console = require ("console.table");
 
-// create the connection information for the sql database
-var connection = mysql.createConnection({
-    host: "localhost",
-
-// Your port; if not 3306
-    port: 3306,
-
-// Your username
-    user: "root",
-
-// Your password
-    password: "password",
-    database: "company_DB"
-});
-
-// connect to the mysql server and sql database
-connection.connect(function(err) {
-    if (err) throw err;
-    // run the start function after the connection is made to prompt the user
-    promptUser();
-});
+var orm = require("./config/orm.js");
+var connection = require("./config/connection.js");
 
 // function which prompts the user for what action they should take
 function promptUser() {
@@ -60,7 +40,6 @@ function promptUser() {
 
 
 function getData () {
-
     
     inquirer.prompt([{
         type: "list",
@@ -73,17 +52,16 @@ function getData () {
         name: "userSearch"
     }
     ])
-    .then(function(tableInput, cb) {
-        var queryString = "SELECT * FROM " + tableInput.userSearch + ";";
-        connection.query(queryString, function(err, result) {
-            if (err) {
-                throw err;
-            }
-            cb(result);
-        });
-    });
+    .then(function(response){
+        orm.selectWhere("department", "dept_name", "Engineering", function(result) {
+        var data = result;
+        console.log(data);
+    })}
+    );
 };
 
-function updateData (){
+// function updateData (){
 
-};
+// };
+
+promptUser();
