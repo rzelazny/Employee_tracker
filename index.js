@@ -39,12 +39,12 @@ function promptUser() {
         ]
     })
     .then(function(response) {
-        // based on their answer, either call the bid or the post functions
+        // based on their answer, call the appropriate function
         switch(response.action){
-            case "Check existing data":
+            case "View current data":
                 getData();
             break;
-            case "Update employee data":
+            case "Update existing data":
                 updateData();
             break;
             case "Create new data":
@@ -57,29 +57,31 @@ function promptUser() {
     });
 };
 
+
+
 function getData () {
+
+    
     inquirer.prompt([{
         type: "list",
         message: "What data are you looking for?",
         choices: [
+            "Department",
             "Employee",
-            "Department"
+            "Role"
         ],
-        name: "choice"
+        name: "userSearch"
     }
     ])
-    .then(function(response){
-        connection.query("SELECT * FROM department WHERE ?",
-        [{
-            id: 1
-        }],
-        function(err, result){
-            
-            if(err) throw err;
-
-            promptUser();
-        })
-    })
+    .then(function(tableInput, cb) {
+        var queryString = "SELECT * FROM " + tableInput.userSearch + ";";
+        connection.query(queryString, function(err, result) {
+            if (err) {
+                throw err;
+            }
+            cb(result);
+        });
+    });
 };
 
 function updateData (){
