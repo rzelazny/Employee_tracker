@@ -104,6 +104,33 @@ function addData (){
                 });
             break;
             case "New Employee":
+                inquirer.prompt([{
+                type: "input",
+                    message: "What is the employee's first name?",
+                    name: "firstName"
+                },
+                {
+                    type: "input",
+                    message: "What is the employee's last name?",
+                    name: "lastName"
+                },
+                {
+                    type: "input",
+                    message: "What is the employee's role?",
+                    name: "empRole"
+                },
+                {
+                    type: "input",
+                    message: "Who is the employee's manager (if applicable)?",
+                    name: "empManager"
+                }])
+                .then(function(response){
+                    orm.create("employee", ["first_name", "last_name", "role_id", "manager_id"], [response.firstName, response.lastName, response.empRole, response.empManager], function(result) {
+                        console.log(`Created new employee: ${response.firstName} ${response.lastName} || Employee id: ${result.insertId}`);
+                        promptUser();
+                    })
+                });
+
             break;
             case "New Role":
             break;
