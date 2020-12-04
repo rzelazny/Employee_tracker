@@ -229,5 +229,57 @@ function addData (){
 };
 
 function deleteData() {
-
+    prompt({
+        type: "list",
+        message: "What type of data do you want to delete?",
+        choices: [
+            "Current Department",
+            "Current Employee",
+            "Current Role"
+        ],
+        name: "userTable"
+    })
+    .then(function(tableChoice){
+        switch(tableChoice.userTable){
+            case "Current Department":
+                prompt({
+                    type: "input",
+                    message: "Which department is being deleted?",
+                    name: "delDept"
+                })
+                .then(function(response){
+                    orm.destroy("department", [response.delDept], function(result) {
+                        console.log(`Deleted department: ${response.delDept}`);
+                        promptUser();
+                    })
+                });
+            break;
+            case "Current Employee":
+                prompt({
+                type: "input",
+                    message: "Which employee is being deleted?",
+                    name: "delName"
+                })
+                .then(function(response){
+                    orm.destroy("employee", [response.delName], function(result) {
+                        console.log(`Deleted employee: ${response.delName}`);
+                        promptUser();
+                    })
+                });
+            break;
+            case "Current Role":
+                prompt({
+                    type: "input",
+                        message: "Which role is being deleted?",
+                        name: "delRole"
+                    })
+                    .then(function(response){
+                        orm.destroy("role", [response.delRole], function(result) {
+                            console.log(`Deleted role: ${response.delRole}`);
+                            promptUser();
+                        })
+                    });
+            break;
+        }
+    })
 };

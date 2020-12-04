@@ -83,6 +83,21 @@ var orm = {
             cb(result);
         });
     },
+
+    destroy: function(table, id, cb) {
+        var queryString = "DELETE FROM " + table;
+    
+        queryString += " WHERE ";
+        queryString += "id = " + id;
+    
+        console.log(queryString);
+        connection.query(queryString, function(err, result) {
+            if (err) {
+                throw err;
+            }
+            cb(result);
+        });
+    },
 };
 
 module.exports = orm;
