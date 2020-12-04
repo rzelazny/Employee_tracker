@@ -17,7 +17,7 @@ function init(){
 
 // function which prompts the user for what action they should take
 function promptUser() {
-    prompt({
+    prompt([{
         name: "action",
         type: "list",
         message: "What would you like to do?",
@@ -28,258 +28,220 @@ function promptUser() {
             "Delete existing data",
             "Exit"
         ]
-    })
+    },
+    {
+        type: "list",
+        message: "Of what type?",
+        choices: [
+            "Department",
+            "Employee",
+            "Role"
+        ],
+        name: "table"
+    }])
     .then(function(response) {
         // based on their answer, call the appropriate function
         switch(response.action){
             case "View current data":
-                return getData();
+                return getData(response.table);
             case "Update existing data":
-                return updateData();
+                return updateData(response.table);
             case "Create new data":
-                return addData();
+                return addData(response.table);
             case "Delete existing data":
-                return deleteData();
+                return deleteData(response.table);
             default:
                 connection.end();
         }
     });
 };
 
-function getData () {
-    prompt({
-        type: "list",
-        message: "What data are you looking for?",
-        choices: [
-            "Department",
-            "Employee",
-            "Role"
-        ],
-        name: "userSearch"
+function getData (table) {
+    orm.selectAll(table, function(result) {
+        console.table(result);
+        promptUser();
     })
-    .then(function(response){
-        orm.selectAll(response.userSearch, function(result) {
-            console.table(result);
-            promptUser();
-        })
-    });
 };
 
-function updateData (){
-    prompt({
-        type: "list",
-        message: "What data do you want to update?",
-        choices: [
-            "Department",
-            "Employee",
-            "Role"
-        ],
-        name: "userTable"
-    })
-    .then(function(tableChoice){
-        switch(tableChoice.userTable){
-            case "Department":
-                prompt({
-                    type: "input",
-                    message: "What is the new department's name?",
-                    name: "newDept"
-                })
-                .then(function(response){
-                    orm.create("department", "dept_name", [response.newDept], function(result) {
-                        console.log(`Created new department: ${response.newDept} || Department id: ${result.insertId}`);
-                        promptUser();
-                    })
-                });
-            break;
-            case "Employee":
-                prompt([{
+function updateData (table){
+    switch(table){
+        case "Department":
+            prompt({
                 type: "input",
-                    message: "What is the employee's first name?",
-                    name: "firstName"
+                message: "What is the new department's name?",
+                name: "newDept"
+            })
+            .then(function(response){
+                orm.create("department", "dept_name", [response.newDept], function(result) {
+                    console.log(`Created new department: ${response.newDept} || Department id: ${result.insertId}`);
+                    promptUser();
+                })
+            });
+        break;
+        case "Employee":
+            prompt([{
+            type: "input",
+                message: "What is the employee's first name?",
+                name: "firstName"
+            },
+            {
+                type: "input",
+                message: "What is the employee's last name?",
+                name: "lastName"
+            },
+            {
+                type: "input",
+                message: "What is the employee's role?",
+                name: "empRole"
+            },
+            {
+                type: "input",
+                message: "Who is the employee's manager (if applicable)?",
+                name: "empManager"
+            }])
+            .then(function(response){
+                orm.create("employee", ["first_name", "last_name", "role_id", "manager_id"], [response.firstName, response.lastName, response.empRole, response.empManager], function(result) {
+                    console.log(`Created new employee: ${response.firstName} ${response.lastName} || Employee id: ${result.insertId}`);
+                    promptUser();
+                })
+            });
+        break;
+        case "Role":
+            prompt([{
+                type: "input",
+                    message: "What is the new role's title?",
+                    name: "newRole"
                 },
                 {
                     type: "input",
-                    message: "What is the employee's last name?",
-                    name: "lastName"
+                    message: "What is the new role's salary?",
+                    name: "salary"
                 },
                 {
                     type: "input",
-                    message: "What is the employee's role?",
-                    name: "empRole"
-                },
-                {
-                    type: "input",
-                    message: "Who is the employee's manager (if applicable)?",
-                    name: "empManager"
+                    message: "What department is the new role in?",
+                    name: "department"
                 }])
                 .then(function(response){
-                    orm.create("employee", ["first_name", "last_name", "role_id", "manager_id"], [response.firstName, response.lastName, response.empRole, response.empManager], function(result) {
-                        console.log(`Created new employee: ${response.firstName} ${response.lastName} || Employee id: ${result.insertId}`);
+                    orm.create("role", ["title", "salary", "department_id"], [response.newRole, response.salary, response.department], function(result) {
+                        console.log(`Created new role: ${response.newRole} in department ${response.department} || role id: ${result.insertId}`);
                         promptUser();
                     })
                 });
-            break;
-            case "Role":
-                prompt([{
-                    type: "input",
-                        message: "What is the new role's title?",
-                        name: "newRole"
-                    },
-                    {
-                        type: "input",
-                        message: "What is the new role's salary?",
-                        name: "salary"
-                    },
-                    {
-                        type: "input",
-                        message: "What department is the new role in?",
-                        name: "department"
-                    }])
-                    .then(function(response){
-                        orm.create("role", ["title", "salary", "department_id"], [response.newRole, response.salary, response.department], function(result) {
-                            console.log(`Created new role: ${response.newRole} in department ${response.department} || role id: ${result.insertId}`);
-                            promptUser();
-                        })
-                    });
-            break;
-        }
-    })
+        break;
+    }
 };
 
 //Function adds new rows based on user input
-function addData (){
-    prompt({
-        type: "list",
-        message: "What type of data do you want to create?",
-        choices: [
-            "New Department",
-            "New Employee",
-            "New Role"
-        ],
-        name: "userTable"
-    })
-    .then(function(tableChoice){
-        switch(tableChoice.userTable){
-            case "New Department":
-                prompt({
-                    type: "input",
-                    message: "What is the new department's name?",
-                    name: "newDept"
-                })
-                .then(function(response){
-                    orm.create("department", "dept_name", [response.newDept], function(result) {
-                        console.log(`Created new department: ${response.newDept} || Department id: ${result.insertId}`);
-                        promptUser();
-                    })
-                });
-            break;
-            case "New Employee":
-                prompt([{
+function addData (table){
+    switch(table){
+        case "Department":
+            prompt({
                 type: "input",
-                    message: "What is the employee's first name?",
-                    name: "firstName"
+                message: "What is the new department's name?",
+                name: "newDept"
+            })
+            .then(function(response){
+                orm.create("department", "dept_name", [response.newDept], function(result) {
+                    console.log(`Created new department: ${response.newDept} || Department id: ${result.insertId}`);
+                    promptUser();
+                })
+            });
+        break;
+        case "Employee":
+            prompt([{
+            type: "input",
+                message: "What is the employee's first name?",
+                name: "firstName"
+            },
+            {
+                type: "input",
+                message: "What is the employee's last name?",
+                name: "lastName"
+            },
+            {
+                type: "input",
+                message: "What is the employee's role?",
+                name: "empRole"
+            },
+            {
+                type: "input",
+                message: "Who is the employee's manager (if applicable)?",
+                name: "empManager"
+            }])
+            .then(function(response){
+                orm.create("employee", ["first_name", "last_name", "role_id", "manager_id"], [response.firstName, response.lastName, response.empRole, response.empManager], function(result) {
+                    console.log(`Created new employee: ${response.firstName} ${response.lastName} || Employee id: ${result.insertId}`);
+                    promptUser();
+                })
+            });
+        break;
+        case "Role":
+            prompt([{
+                type: "input",
+                    message: "What is the new role's title?",
+                    name: "newRole"
                 },
                 {
                     type: "input",
-                    message: "What is the employee's last name?",
-                    name: "lastName"
+                    message: "What is the new role's salary?",
+                    name: "salary"
                 },
                 {
                     type: "input",
-                    message: "What is the employee's role?",
-                    name: "empRole"
-                },
-                {
-                    type: "input",
-                    message: "Who is the employee's manager (if applicable)?",
-                    name: "empManager"
+                    message: "What department is the new role in?",
+                    name: "department"
                 }])
                 .then(function(response){
-                    orm.create("employee", ["first_name", "last_name", "role_id", "manager_id"], [response.firstName, response.lastName, response.empRole, response.empManager], function(result) {
-                        console.log(`Created new employee: ${response.firstName} ${response.lastName} || Employee id: ${result.insertId}`);
+                    orm.create("role", ["title", "salary", "department_id"], [response.newRole, response.salary, response.department], function(result) {
+                        console.log(`Created new role: ${response.newRole} in department ${response.department} || role id: ${result.insertId}`);
                         promptUser();
                     })
                 });
-            break;
-            case "New Role":
-                prompt([{
-                    type: "input",
-                        message: "What is the new role's title?",
-                        name: "newRole"
-                    },
-                    {
-                        type: "input",
-                        message: "What is the new role's salary?",
-                        name: "salary"
-                    },
-                    {
-                        type: "input",
-                        message: "What department is the new role in?",
-                        name: "department"
-                    }])
-                    .then(function(response){
-                        orm.create("role", ["title", "salary", "department_id"], [response.newRole, response.salary, response.department], function(result) {
-                            console.log(`Created new role: ${response.newRole} in department ${response.department} || role id: ${result.insertId}`);
-                            promptUser();
-                        })
-                    });
-            break;
-        }
-    })
+        break;
+    }
 };
 
-function deleteData() {
-    prompt({
-        type: "list",
-        message: "What type of data do you want to delete?",
-        choices: [
-            "Current Department",
-            "Current Employee",
-            "Current Role"
-        ],
-        name: "userTable"
-    })
-    .then(function(tableChoice){
-        switch(tableChoice.userTable){
-            case "Current Department":
-                prompt({
-                    type: "input",
-                    message: "Which department is being deleted?",
-                    name: "delDept"
-                })
-                .then(function(response){
-                    orm.destroy("department", [response.delDept], function(result) {
-                        console.log(`Deleted department: ${response.delDept}`);
-                        promptUser();
-                    })
-                });
-            break;
-            case "Current Employee":
-                prompt({
+function deleteData(table) {
+    switch(table){
+        case "Department":
+            prompt({
                 type: "input",
-                    message: "Which employee is being deleted?",
-                    name: "delName"
+                message: "Which department is being deleted?",
+                name: "delDept"
+            })
+            .then(function(response){
+                orm.destroy("department", [response.delDept], function(result) {
+                    console.log(`Deleted department: ${response.delDept}`);
+                    promptUser();
+                })
+            });
+        break;
+        case "Employee":
+            prompt({
+            type: "input",
+                message: "Which employee is being deleted?",
+                name: "delName"
+            })
+            .then(function(response){
+                orm.destroy("employee", [response.delName], function(result) {
+                    console.log(`Deleted employee: ${response.delName}`);
+                    promptUser();
+                })
+            });
+        break;
+        case "Role":
+            prompt({
+                type: "input",
+                    message: "Which role is being deleted?",
+                    name: "delRole"
                 })
                 .then(function(response){
-                    orm.destroy("employee", [response.delName], function(result) {
-                        console.log(`Deleted employee: ${response.delName}`);
+                    orm.destroy("role", [response.delRole], function(result) {
+                        console.log(`Deleted role: ${response.delRole}`);
                         promptUser();
                     })
                 });
-            break;
-            case "Current Role":
-                prompt({
-                    type: "input",
-                        message: "Which role is being deleted?",
-                        name: "delRole"
-                    })
-                    .then(function(response){
-                        orm.destroy("role", [response.delRole], function(result) {
-                            console.log(`Deleted role: ${response.delRole}`);
-                            promptUser();
-                        })
-                    });
-            break;
-        }
-    })
+        break;
+    }
 };
