@@ -66,14 +66,76 @@ function updateData (){
             "Employee",
             "Role"
         ],
-        name: "userUpdate"
+        name: "userTable"
     })
-    .then(function(response){
-        orm.selectAll(response.userSearch, function(result) {
-            console.log(result);
-            promptUser();
-        })
-    });
+    .then(function(tableChoice){
+        switch(tableChoice.userTable){
+            case "Department":
+                inquirer.prompt({
+                    type: "input",
+                    message: "What is the new department's name?",
+                    name: "newDept"
+                })
+                .then(function(response){
+                    orm.create("department", "dept_name", [response.newDept], function(result) {
+                        console.log(`Created new department: ${response.newDept} || Department id: ${result.insertId}`);
+                        promptUser();
+                    })
+                });
+            break;
+            case "Employee":
+                inquirer.prompt([{
+                type: "input",
+                    message: "What is the employee's first name?",
+                    name: "firstName"
+                },
+                {
+                    type: "input",
+                    message: "What is the employee's last name?",
+                    name: "lastName"
+                },
+                {
+                    type: "input",
+                    message: "What is the employee's role?",
+                    name: "empRole"
+                },
+                {
+                    type: "input",
+                    message: "Who is the employee's manager (if applicable)?",
+                    name: "empManager"
+                }])
+                .then(function(response){
+                    orm.create("employee", ["first_name", "last_name", "role_id", "manager_id"], [response.firstName, response.lastName, response.empRole, response.empManager], function(result) {
+                        console.log(`Created new employee: ${response.firstName} ${response.lastName} || Employee id: ${result.insertId}`);
+                        promptUser();
+                    })
+                });
+            break;
+            case "Role":
+                inquirer.prompt([{
+                    type: "input",
+                        message: "What is the new role's title?",
+                        name: "newRole"
+                    },
+                    {
+                        type: "input",
+                        message: "What is the new role's salary?",
+                        name: "salary"
+                    },
+                    {
+                        type: "input",
+                        message: "What department is the new role in?",
+                        name: "department"
+                    }])
+                    .then(function(response){
+                        orm.create("role", ["title", "salary", "department_id"], [response.newRole, response.salary, response.department], function(result) {
+                            console.log(`Created new role: ${response.newRole} in department ${response.department} || role id: ${result.insertId}`);
+                            promptUser();
+                        })
+                    });
+            break;
+        }
+    })
 };
 
 //Function adds new rows based on user input
