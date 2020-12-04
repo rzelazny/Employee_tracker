@@ -1,4 +1,4 @@
-const inquirer = require ("inquirer");
+const { prompt } = require("inquirer");
 const logo = require("asciiart-logo");
 require("console.table");
 
@@ -17,7 +17,7 @@ function init(){
 
 // function which prompts the user for what action they should take
 function promptUser() {
-    inquirer.prompt({
+    prompt({
         name: "action",
         type: "list",
         message: "What would you like to do?",
@@ -33,16 +33,13 @@ function promptUser() {
         // based on their answer, call the appropriate function
         switch(response.action){
             case "View current data":
-                getData();
-            break;
+                return getData();
             case "Update existing data":
-                updateData();
-            break;
+                return updateData();
             case "Create new data":
-                addData();
-            break;
+                return addData();
             case "Delete existing data":
-                deleteData();
+                return deleteData();
             default:
                 connection.end();
         }
@@ -50,7 +47,7 @@ function promptUser() {
 };
 
 function getData () {
-    inquirer.prompt({
+    prompt({
         type: "list",
         message: "What data are you looking for?",
         choices: [
@@ -69,7 +66,7 @@ function getData () {
 };
 
 function updateData (){
-    inquirer.prompt({
+    prompt({
         type: "list",
         message: "What data do you want to update?",
         choices: [
@@ -82,7 +79,7 @@ function updateData (){
     .then(function(tableChoice){
         switch(tableChoice.userTable){
             case "Department":
-                inquirer.prompt({
+                prompt({
                     type: "input",
                     message: "What is the new department's name?",
                     name: "newDept"
@@ -95,7 +92,7 @@ function updateData (){
                 });
             break;
             case "Employee":
-                inquirer.prompt([{
+                prompt([{
                 type: "input",
                     message: "What is the employee's first name?",
                     name: "firstName"
@@ -123,7 +120,7 @@ function updateData (){
                 });
             break;
             case "Role":
-                inquirer.prompt([{
+                prompt([{
                     type: "input",
                         message: "What is the new role's title?",
                         name: "newRole"
@@ -151,7 +148,7 @@ function updateData (){
 
 //Function adds new rows based on user input
 function addData (){
-    inquirer.prompt({
+    prompt({
         type: "list",
         message: "What type of data do you want to create?",
         choices: [
@@ -164,7 +161,7 @@ function addData (){
     .then(function(tableChoice){
         switch(tableChoice.userTable){
             case "New Department":
-                inquirer.prompt({
+                prompt({
                     type: "input",
                     message: "What is the new department's name?",
                     name: "newDept"
@@ -177,7 +174,7 @@ function addData (){
                 });
             break;
             case "New Employee":
-                inquirer.prompt([{
+                prompt([{
                 type: "input",
                     message: "What is the employee's first name?",
                     name: "firstName"
@@ -205,7 +202,7 @@ function addData (){
                 });
             break;
             case "New Role":
-                inquirer.prompt([{
+                prompt([{
                     type: "input",
                         message: "What is the new role's title?",
                         name: "newRole"
@@ -229,4 +226,8 @@ function addData (){
             break;
         }
     })
+};
+
+function deleteData() {
+
 };
