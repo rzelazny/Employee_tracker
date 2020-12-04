@@ -29,6 +29,7 @@ function promptUser() {
             break;
             case "Create new data":
                 addData();
+            break;
             case "Delete existing data":
                 deleteData();
             default:
@@ -75,24 +76,39 @@ function updateData (){
     });
 };
 
-//table, cols, vals
+//Function adds new rows based on user input
 function addData (){
     inquirer.prompt({
         type: "list",
-        message: "What data do you want to add?",
+        message: "What type data do you want to create?",
         choices: [
             "New Department",
             "New Employee",
             "New Role"
         ],
-        name: "userCreate"
+        name: "userTable"
     })
-    .then(function(response){
-        orm.create(response.userSearch, function(result) {
-            console.log(``);
-            promptUser();
-        })
-    });
+    .then(function(tableChoice){
+        switch(tableChoice.userTable){
+            case "New Department":
+                inquirer.prompt({
+                    type: "input",
+                    message: "What is the new department's name?",
+                    name: "newDept"
+                })
+                .then(function(response){
+                    orm.create("department", "dept_name", [response.newDept], function(result) {
+                        console.log(`Created new department: ${response.newDept} || Department id: ${result.insertId}`);
+                        promptUser();
+                    })
+                });
+            break;
+            case "New Employee":
+            break;
+            case "New Role":
+            break;
+        }
+    })
 };
 
 promptUser();
