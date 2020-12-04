@@ -1,8 +1,8 @@
 const inquirer = require ("inquirer");
-const console = require ("console.table");
+require("console.table");
 
 var orm = require("./config/orm.js");
-var connection = require("./config/connection.js");
+//var connection = require("./config/connection.js");
 
 // function which prompts the user for what action they should take
 function promptUser() {
@@ -32,7 +32,7 @@ function promptUser() {
             case "Delete existing data":
                 deleteData();
             default:
-                connection.end();
+                //connection.end();
         }
     });
 };
@@ -41,7 +41,7 @@ function promptUser() {
 
 function getData () {
     
-    inquirer.prompt([{
+    inquirer.prompt({
         type: "list",
         message: "What data are you looking for?",
         choices: [
@@ -51,7 +51,7 @@ function getData () {
         ],
         name: "userSearch"
     }
-    ])
+    )
     .then(function(response){
         orm.selectWhere("department", "dept_name", "Engineering", function(result) {
         var data = result;
