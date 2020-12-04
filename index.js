@@ -38,7 +38,6 @@ function promptUser() {
 };
 
 function getData () {
-    
     inquirer.prompt({
         type: "list",
         message: "What data are you looking for?",
@@ -48,19 +47,52 @@ function getData () {
             "Role"
         ],
         name: "userSearch"
-    }
-    )
+    })
     .then(function(response){
         orm.selectAll(response.userSearch, function(result) {
-        var data = result;
-        console.log(data);
-        promptUser();
-    })}
-    );
+            console.log(result);
+            promptUser();
+        })
+    });
 };
 
-// function updateData (){
+function updateData (){
+    inquirer.prompt({
+        type: "list",
+        message: "What data do you want to update?",
+        choices: [
+            "Department",
+            "Employee",
+            "Role"
+        ],
+        name: "userUpdate"
+    })
+    .then(function(response){
+        orm.selectAll(response.userSearch, function(result) {
+            console.log(result);
+            promptUser();
+        })
+    });
+};
 
-// };
+//table, cols, vals
+function addData (){
+    inquirer.prompt({
+        type: "list",
+        message: "What data do you want to add?",
+        choices: [
+            "New Department",
+            "New Employee",
+            "New Role"
+        ],
+        name: "userCreate"
+    })
+    .then(function(response){
+        orm.create(response.userSearch, function(result) {
+            console.log(``);
+            promptUser();
+        })
+    });
+};
 
 promptUser();
