@@ -1,5 +1,5 @@
 const inquirer = require ("inquirer");
-const conTable = require("console.table");
+require("console.table");
 
 var orm = require("./config/orm.js");
 var connection = require("./config/connection.js");
@@ -51,7 +51,7 @@ function getData () {
     })
     .then(function(response){
         orm.selectAll(response.userSearch, function(result) {
-            console.log(result);
+            console.table(result);
             promptUser();
         })
     });
@@ -80,7 +80,7 @@ function updateData (){
 function addData (){
     inquirer.prompt({
         type: "list",
-        message: "What type data do you want to create?",
+        message: "What type of data do you want to create?",
         choices: [
             "New Department",
             "New Employee",
