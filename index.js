@@ -130,9 +130,29 @@ function addData (){
                         promptUser();
                     })
                 });
-
             break;
             case "New Role":
+                inquirer.prompt([{
+                    type: "input",
+                        message: "What is the new role's title?",
+                        name: "newRole"
+                    },
+                    {
+                        type: "input",
+                        message: "What is the new role's salary?",
+                        name: "salary"
+                    },
+                    {
+                        type: "input",
+                        message: "What department is the new role in?",
+                        name: "department"
+                    }])
+                    .then(function(response){
+                        orm.create("role", ["title", "salary", "department_id"], [response.newRole, response.salary, response.department], function(result) {
+                            console.log(`Created new role: ${response.newRole} in department ${response.department} || role id: ${result.insertId}`);
+                            promptUser();
+                        })
+                    });
             break;
         }
     })
