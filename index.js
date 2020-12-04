@@ -1,8 +1,19 @@
 const inquirer = require ("inquirer");
+const logo = require("asciiart-logo");
 require("console.table");
 
 var orm = require("./config/orm.js");
 var connection = require("./config/connection.js");
+
+init();
+
+function init(){
+    const logoText = logo({ name: "Employee Manager" }).render();
+
+    console.log(logoText);
+
+    promptUser();
+}
 
 // function which prompts the user for what action they should take
 function promptUser() {
@@ -219,5 +230,3 @@ function addData (){
         }
     })
 };
-
-promptUser();
