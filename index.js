@@ -3,7 +3,6 @@ const logo = require("asciiart-logo");
 require("console.table");
 
 var orm = require("./config/orm.js");
-var connection = require("./config/connection.js");
 
 init();
 
@@ -53,7 +52,7 @@ function promptUser() {
             case "Delete existing data":
                 return deleteData(response.table);
             default:
-                connection.end();
+                orm.quit();
         }
     });
 };

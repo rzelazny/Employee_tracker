@@ -193,6 +193,10 @@ var orm = {
             cb(result);
         });
     },
+
+    quit: function(){
+        connection.end();
+    }
 };
 
 module.exports = orm;
