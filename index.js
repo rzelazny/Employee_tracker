@@ -218,7 +218,7 @@ function deleteData(table) {
                 })
             .then(function(response){
                 console.log(response.delDept)
-                orm.destroy("department", "dept_name", [response.delDept], function(result) {
+                orm.destroy("department", [response.delDept], function(result) {
                     console.log(`Deleted department: ${response.delDept}`);
                     promptUser();
                 })
@@ -234,7 +234,8 @@ function deleteData(table) {
                 choices: employees
             })
             .then(function(response){
-                orm.destroy("employee", "id", [response.delName], function(result) {
+                console.log(response.delName);
+                orm.destroy("employee", [response.delName], function(result) {
                     console.log(`Deleted employee: ${response.delName}`);
                     promptUser();
                 })
@@ -250,7 +251,7 @@ function deleteData(table) {
                     choices: role
                 })
                 .then(function(response){
-                    orm.destroy("role", "title", [response.delRole], function(result) {
+                    orm.destroy("role", [response.delRole], function(result) {
                         console.log(`Deleted role: ${response.delRole}`);
                         promptUser();
                     })

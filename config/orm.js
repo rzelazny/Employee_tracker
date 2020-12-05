@@ -45,25 +45,31 @@ var orm = {
         });
     },
 
+    //get list of department names and IDs
     getDepartments: function(cb) {
-        var queryString = "SELECT dept_name FROM department";
+        var queryString = "SELECT id, dept_name FROM department";
         var choiceArray = [];
 
         connection.query(queryString, function(err, result) {
             if (err) throw err;
 
             for (var i = 0; i < result.length; i++) {
-                choiceArray.push(result[i].dept_name);
+                //create department object
+                let department = {
+                    name: result[i].dept_name,
+                    value: result[i].id
+                }
+                choiceArray.push(department);
             }
             cb(choiceArray);
         });  
     },
 
+    //get list of employee names with IDs
     getEmployees: function(cb) {
         var queryString = "SELECT id, first_name, last_name FROM employee";
         var choiceArray = [];
         
-
         connection.query(queryString, function(err, result) {
             if (err) throw err;
 
@@ -79,34 +85,25 @@ var orm = {
         });  
     },
 
+    // get list of roles with IDs
     getRoles: function(cb) {
-        var queryString = "SELECT title FROM role";
+        var queryString = "SELECT id, title FROM role";
         var choiceArray = [];
 
         connection.query(queryString, function(err, result) {
             if (err) throw err;
 
             for (var i = 0; i < result.length; i++) {
-                choiceArray.push(result[i].title);
+                //create role object
+                let role = {
+                    name: result[i].title,
+                    value: result[i].id
+                }
+                choiceArray.push(role);
             }
             cb(choiceArray);
         });  
     },
-    // getManagerNames: function(tableInput, cb) {
-    //     var queryString = "SELECT * FROM ??";
-    //     connection.query(queryString, [tableInput], function(err, result) {
-    //         if (err) throw err;
-    //         cb(result);
-    //         });
-    // },
-
-    // getEmpName: function(tableInput, cb) {
-    //     var queryString = "SELECT * FROM ??";
-    //     connection.query(queryString, [tableInput], function(err, result) {
-    //         if (err) throw err;
-    //         cb(result);
-    //         });
-    // },
 
     //updates an existing row for a given table and conditions
     update: function(table, objColVals, condition, cb) {
@@ -150,11 +147,11 @@ var orm = {
     },
 
     //deletes a row in a given table with a given id
-    destroy: function(table, col, value, cb) {
+    destroy: function(table, value, cb) {
         var queryString = "DELETE FROM " + table;
     
-        queryString += " WHERE ";
-        queryString += col + "= '" + value + "'";
+        queryString += " WHERE id = '";
+        queryString += value + "'";
 
         console.log(queryString);
         connection.query(queryString, function(err, result) {
