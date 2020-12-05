@@ -38,7 +38,8 @@ function promptUser() {
             "Employee",
             "Role"
         ],
-        name: "table"
+        name: "table",
+        when: (response) => response.action != "Exit",
     }])
     .then(function(response) {
         // based on their answer, call the appropriate function
