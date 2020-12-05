@@ -46,7 +46,12 @@ var orm = {
     },
 
     selectEmployees: function(cb) {
-    var queryString = "SELECT * FROM employee";
+    var queryString = `SELECT em.id, em.first_name, em.last_name, rl.title, dp.dept_name, rl.salary FROM employee as em
+    LEFT JOIN role as rl
+    ON em.role_id = rl.id
+    LEFT JOIN department as dp
+    ON rl.department_id = dp.id
+    `;
     connection.query(queryString, function(err, result) {
         if (err) throw err;
         cb(result);
@@ -57,8 +62,8 @@ var orm = {
     var queryString = `
     SELECT rl.id, rl.title, rl.salary, dp.dept_name FROM role as rl
     LEFT JOIN department as dp
-    ON rl.department_id = dp.id
-    `;
+    ON rl.department_id = dp.id`;
+
     connection.query(queryString, function(err, result) {
         if (err) throw err;
         cb(result);
