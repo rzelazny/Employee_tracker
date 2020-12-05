@@ -15,12 +15,23 @@ function printQuestionMarks(num) {
 var orm = {
     // Selects everything in the department table
     selectDeptartments: function(cb) {
-    var queryString = `SELECT dp.id, dp.dept_name, SUM(rl.salary) as total_sal FROM department as dp
-    LEFT JOIN role as rl 
-    ON dp.id = rl.department_id
-    LEFT JOIN employee as em
-    ON em.role_id = rl.id
-    GROUP By dp.id`;
+        var queryString = `SELECT dp.id, dp.dept_name, SUM(rl2.salary) as total_sal from department as dp
+        LEFT JOIN role as rl
+        ON rl.department_id = dp.id
+        LEFT JOIN employee as em
+        ON em.role_id = rl.id
+        LEFT JOIN role as rl2 on
+        rl2.id = em.role_id
+        group by dp.id
+        `;
+
+    // var queryString = `SELECT dp.id, dp.dept_name, SUM(rl.salary) as total_sal FROM department as dp
+    // LEFT JOIN role as rl 
+    // ON dp.id = rl.department_id
+    // LEFT JOIN employee as em
+    // ON em.role_id = rl.id
+    // GROUP By dp.id`;
+
     connection.query(queryString, function(err, result) {
         if (err) throw err;
         cb(result);
