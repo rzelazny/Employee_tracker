@@ -169,9 +169,14 @@ function addData (table){
             });
         break;
         case "Employee":
+            //get list of existing employees for manager selections
             orm.getEmployees(function(employees) {
-                //add N/A option to employees for manager selection
-                employees.push({name: "N/A", value: null})
+            //add N/A option to employees for manager selection
+            employees.push({name: "N/A", value: null})
+
+            //get roles for role selection
+            orm.getRoles(function(roles) {
+                
             prompt([{
             type: "input",
                 message: "What is the employee's first name?",
@@ -189,9 +194,10 @@ function addData (table){
                 choices: employees
             },
             {
-                type: "input",
+                type: "list",
                 message: "What is the employee's role?",
-                name: "empRole"
+                name: "empRole",
+                choices: roles
             }])
             .then(function(response){
                 orm.create("employee", ["first_name", "last_name", "role_id", "manager_id"], [response.firstName, response.lastName, response.empRole, response.empManager], function(result) {
@@ -199,9 +205,12 @@ function addData (table){
                     promptUser();
                 })
             });
+            })
         })
         break;
         case "Role":
+            //get existing deparments for dept selection
+            orm.getDepartments(function(departments) {
             prompt([{
                 type: "input",
                     message: "What is the new role's title?",
@@ -213,9 +222,10 @@ function addData (table){
                     name: "salary"
                 },
                 {
-                    type: "input",
+                    type: "list",
                     message: "What department is the new role in?",
-                    name: "department"
+                    name: "department",
+                    choices: departments
                 }])
                 .then(function(response){
                     orm.create("role", ["title", "salary", "department_id"], [response.newRole, response.salary, response.department], function(result) {
@@ -223,6 +233,7 @@ function addData (table){
                         promptUser();
                     })
                 });
+            })
         break;
     }
 };
