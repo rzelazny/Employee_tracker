@@ -55,9 +55,7 @@ var orm = {
         LEFT JOIN department as dp
         ON rl.department_id = dp.id
         LEFT JOIN employee as em2
-        ON em.manager_id = em2.id
-        `;
-
+        ON em.manager_id = em2.id`;
     connection.query(queryString, function(err, result) {
         if (err) throw err;
         cb(result);
@@ -70,7 +68,6 @@ var orm = {
         SELECT rl.id, rl.title, rl.salary, dp.dept_name FROM role as rl
         LEFT JOIN department as dp
         ON rl.department_id = dp.id`;
-
     connection.query(queryString, function(err, result) {
         if (err) throw err;
         cb(result);
@@ -135,6 +132,28 @@ var orm = {
             }
             cb(choiceArray);
         });  
+    },
+
+    //get list of columns in a table other than the id column
+    getColumns: function (table, cb){
+        
+        var queryString = `SELECT COLUMN_NAME
+        FROM INFORMATION_SCHEMA.COLUMNS 
+        WHERE TABLE_SCHEMA = 'company_DB' AND TABLE_NAME = '` ;
+
+        queryString += table + "'";
+
+        var choiceArray = [];
+
+        connection.query(queryString, function(err, result) {
+            if (err) throw err;
+            
+            //start at 1 since we don't need the ID column
+            for (var i = 1; i < result.length; i++) {
+                choiceArray.push(result[i]);
+            }
+            cb(choiceArray);
+        });
     },
 
     //updates an existing row for a given table and conditions
