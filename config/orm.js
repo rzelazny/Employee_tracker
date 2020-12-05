@@ -59,6 +59,33 @@ var orm = {
         });  
     },
 
+    getEmployees: function(cb) {
+        var queryString = "SELECT dept_name FROM department";
+        var choiceArray = [];
+
+        connection.query(queryString, function(err, result) {
+            if (err) throw err;
+
+            for (var i = 0; i < result.length; i++) {
+                choiceArray.push(result[i].dept_name);
+            }
+            cb(choiceArray);
+        });  
+    },
+
+    getRoles: function(cb) {
+        var queryString = "SELECT title FROM role";
+        var choiceArray = [];
+
+        connection.query(queryString, function(err, result) {
+            if (err) throw err;
+
+            for (var i = 0; i < result.length; i++) {
+                choiceArray.push(result[i].title);
+            }
+            cb(choiceArray);
+        });  
+    },
     // getManagerNames: function(tableInput, cb) {
     //     var queryString = "SELECT * FROM ??";
     //     connection.query(queryString, [tableInput], function(err, result) {
@@ -117,12 +144,12 @@ var orm = {
     },
 
     //deletes a row in a given table with a given id
-    destroy: function(table, dept, cb) {
+    destroy: function(table, col, value, cb) {
         var queryString = "DELETE FROM " + table;
     
         queryString += " WHERE ";
-        queryString += "dept_name = '" + dept + "'";
-    
+        queryString += col + "= '" + value + "'";
+
         console.log(queryString);
         connection.query(queryString, function(err, result) {
             if (err) {
