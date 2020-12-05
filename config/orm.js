@@ -147,10 +147,10 @@ var orm = {
 
         connection.query(queryString, function(err, result) {
             if (err) throw err;
-            
+            console.log(result);
             //start at 1 since we don't need the ID column
             for (var i = 1; i < result.length; i++) {
-                choiceArray.push(result[i]);
+                choiceArray.push(result[i].COLUMN_NAME);
             }
             cb(choiceArray);
         });
@@ -161,7 +161,7 @@ var orm = {
         var queryString = "UPDATE " + table;
     
         queryString += " SET ";
-        queryString += objToSql(objColVals);
+        queryString += objColVals;
         queryString += " WHERE ";
         queryString += condition;
     
