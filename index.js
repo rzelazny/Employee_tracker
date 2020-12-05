@@ -7,6 +7,7 @@ var connection = require("./config/connection.js");
 
 init();
 
+//The welcome function
 function init(){
     const logoText = logo({ name: "Employee Manager" }).render();
 
@@ -15,7 +16,7 @@ function init(){
     promptUser();
 }
 
-// function which prompts the user for what action they should take
+//Main prompt function that asks the user which action they want to take
 function promptUser() {
     prompt([{
         name: "action",
@@ -56,6 +57,7 @@ function promptUser() {
     });
 };
 
+//Function returns all data from a table
 function getData (table) {
     orm.selectAll(table, function(result) {
         console.table(result);
@@ -63,6 +65,7 @@ function getData (table) {
     })
 };
 
+//Function updates existing data
 function updateData (table){
     switch(table){
         case "Department":
@@ -132,7 +135,7 @@ function updateData (table){
     }
 };
 
-//Function adds new rows based on user input
+//Function adds new rows to existing tables
 function addData (table){
     switch(table){
         case "Department":
@@ -202,19 +205,24 @@ function addData (table){
     }
 };
 
+//Function deletes data from existing tables
 function deleteData(table) {
     switch(table){
         case "Department":
+            orm.getDepartments(function(departments) {
             prompt({
-                type: "input",
+                type: "list",
                 message: "Which department is being deleted?",
-                name: "delDept"
-            })
+                name: "delDept",
+                choices: departments
+                })
             .then(function(response){
+                console.log(response.delDept)
                 orm.destroy("department", [response.delDept], function(result) {
                     console.log(`Deleted department: ${response.delDept}`);
                     promptUser();
                 })
+            });
             });
         break;
         case "Employee":
