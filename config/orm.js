@@ -36,7 +36,7 @@ function objToSql(ob) {
 
 //The object relational mapping functions
 var orm = {
-    // Selects everything in the departments table
+    // Selects everything in the department table
     selectDeptartments: function(cb) {
     var queryString = "SELECT * FROM department";
     connection.query(queryString, function(err, result) {
@@ -45,6 +45,7 @@ var orm = {
         });
     },
 
+    //selects all employee data, joining the role and department tables
     selectEmployees: function(cb) {
     var queryString = `SELECT em.id, em.first_name, em.last_name, rl.title, dp.dept_name, rl.salary FROM employee as em
         LEFT JOIN role as rl
@@ -58,6 +59,7 @@ var orm = {
         });
     },
 
+    //selects all role data, joining the department table
     selectRoles: function(cb) {
     var queryString = `
         SELECT rl.id, rl.title, rl.salary, dp.dept_name FROM role as rl
