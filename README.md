@@ -25,7 +25,7 @@ Requires installation of node.js. Uses the inquirer, asciiart-logo, console.tabl
 
 Run the code via the terminal with command: node index
 
-[Demonstration video](https://drive.google.com/file/d/1a9sWS7fDmnqbeAcZimeHvmBSwvH9-EZA/view?usp=sharing)
+[Demonstration video](https://drive.google.com/file/d/1p1uZqA_Izo003hPIzIPpi1sZZX-6qL-k/view)
 
 ## License
 
