@@ -15,7 +15,12 @@ function printQuestionMarks(num) {
 var orm = {
     // Selects everything in the department table
     selectDeptartments: function(cb) {
-    var queryString = "SELECT * FROM department";
+    var queryString = `SELECT dp.id, dp.dept_name, SUM(rl.salary) as total_sal FROM department as dp
+    LEFT JOIN role as rl 
+    ON dp.id = rl.department_id
+    LEFT JOIN employee as em
+    ON em.role_id = rl.id
+    GROUP By dp.id`;
     connection.query(queryString, function(err, result) {
         if (err) throw err;
         cb(result);
