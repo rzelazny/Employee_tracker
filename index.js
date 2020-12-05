@@ -169,6 +169,9 @@ function addData (table){
             });
         break;
         case "Employee":
+            orm.getEmployees(function(employees) {
+                //add N/A option to employees for manager selection
+                employees.push({name: "N/A", value: null})
             prompt([{
             type: "input",
                 message: "What is the employee's first name?",
@@ -180,14 +183,15 @@ function addData (table){
                 name: "lastName"
             },
             {
-                type: "input",
-                message: "What is the employee's role?",
-                name: "empRole"
+                type: "list",
+                message: "Who is the employee's manager (if applicable)?",
+                name: "empManager",
+                choices: employees
             },
             {
                 type: "input",
-                message: "Who is the employee's manager (if applicable)?",
-                name: "empManager"
+                message: "What is the employee's role?",
+                name: "empRole"
             }])
             .then(function(response){
                 orm.create("employee", ["first_name", "last_name", "role_id", "manager_id"], [response.firstName, response.lastName, response.empRole, response.empManager], function(result) {
@@ -195,6 +199,7 @@ function addData (table){
                     promptUser();
                 })
             });
+        })
         break;
         case "Role":
             prompt([{
