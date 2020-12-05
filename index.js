@@ -58,7 +58,7 @@ function promptUser() {
     });
 };
 
-//Function returns all data from a table
+//Function returns all data from a table with joins to pull linked data where appropriate
 function getData (table) {
     switch(table){
         case "Department":
@@ -169,7 +169,7 @@ function addData (table){
             });
         break;
         case "Employee":
-            //get list of existing employees for manager selections
+            //get list of existing employees for manager selection
             orm.getEmployees(function(employees) {
             //add N/A option to employees for manager selection
             employees.push({name: "N/A", value: null})
@@ -209,7 +209,7 @@ function addData (table){
         })
         break;
         case "Role":
-            //get existing deparments for dept selection
+            //get existing departments for departments selection
             orm.getDepartments(function(departments) {
             prompt([{
                 type: "input",
@@ -242,6 +242,7 @@ function addData (table){
 function deleteData(table) {
     switch(table){
         case "Department":
+            //get existing department list
             orm.getDepartments(function(departments) {
             prompt({
                 type: "list",
@@ -259,6 +260,7 @@ function deleteData(table) {
             });
         break;
         case "Employee":
+            //get existing employee list
             orm.getEmployees(function(employees) {
             prompt({
             type: "list",
@@ -276,6 +278,7 @@ function deleteData(table) {
             });
         break;
         case "Role":
+            //get existing role list
             orm.getRoles(function(role) {
             prompt({
                 type: "list",
