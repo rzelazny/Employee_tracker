@@ -130,7 +130,6 @@ var orm = {
 
         connection.query(queryString, function(err, result) {
             if (err) throw err;
-            console.log(result);
             //start at 1 since we don't need the ID column
             for (var i = 1; i < result.length; i++) {
                 choiceArray.push(result[i].COLUMN_NAME);
@@ -148,7 +147,6 @@ var orm = {
         queryString += " WHERE ";
         queryString += condition;
     
-        console.log(queryString);
         connection.query(queryString, function(err, result) {
             if (err) {
                 throw err;
@@ -169,8 +167,6 @@ var orm = {
         queryString += printQuestionMarks(vals.length);
         queryString += ") ";
     
-        console.log(queryString);
-    
         connection.query(queryString, vals, function(err, result) {
             if (err) {
                 throw err;
@@ -187,7 +183,6 @@ var orm = {
         queryString += " WHERE id = '";
         queryString += id + "'";
 
-        console.log(queryString);
         connection.query(queryString, function(err, result) {
             if (err) {
                 throw err;
