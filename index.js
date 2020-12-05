@@ -171,7 +171,7 @@ function updateData (table){
             break;
             case "Role":
                 orm.getRoles(function(roles) {
-                    orm.getDepartments(function(departments) {
+                orm.getDepartments(function(departments) {
                     prompt([{
                         type: "list",
                         message: "Which role is being updated?",
@@ -200,18 +200,12 @@ function updateData (table){
                     ])
                     .then(function(response){
                         orm.update("role", response.updateCol + " = '" + response.newData + "'", "id=" + response.updateRole , function(result) {
-                            console.log(`Updated role id: ${response.updateDept} || ${response.updateCol}: ${response.newData}`);
+                            console.log(`Updated role id: ${response.updateRole} || ${response.updateCol}: ${response.newData}`);
                             promptUser();
                         })
                     });
                     });
                     });
-                    // .then(function(response){
-                    //     orm.create("role", ["title", "salary", "department_id"], [response.newRole, response.salary, response.department], function(result) {
-                    //         console.log(`Created new role: ${response.newRole} in department ${response.department} || role id: ${result.insertId}`);
-                    //         promptUser();
-                    //     })
-                    // });
             break;
         }
     })
