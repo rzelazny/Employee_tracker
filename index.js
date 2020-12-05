@@ -107,38 +107,66 @@ function updateData (table){
                 ])
                 .then(function(response){
                     orm.update("department", response.updateCol + " = '" + response.newData + "'", "id=" + response.updateDept , function(result) {
-                        console.log(`Created updated department: ${response.updateDept} || ${response.updateCol}: ${response.newData}`);
+                        console.log(`Updated department id: ${response.updateDept} || ${response.updateCol}: ${response.newData}`);
                         promptUser();
                     })
                 });
                 });
             break;
             case "Employee":
-                prompt([{
-                type: "input",
-                    message: "What is the employee's first name?",
-                    name: "firstName"
-                },
-                {
-                    type: "input",
-                    message: "What is the employee's last name?",
-                    name: "lastName"
-                },
-                {
-                    type: "input",
-                    message: "What is the employee's role?",
-                    name: "empRole"
-                },
-                {
-                    type: "input",
-                    message: "Who is the employee's manager (if applicable)?",
-                    name: "empManager"
-                }])
+                orm.getEmployees(function(employees) {
+                orm.getRoles(function(roles) {
+                    prompt([{
+                        type: "list",
+                        message: "Which employee is being updated?",
+                        name: "updateEmp",
+                        choices: employees
+                    },
+                    {
+                        type: "list",
+                        message: "Which field is being updated?",
+                        name: "updateCol",
+                        choices: columns
+                    },
+                    {
+                        type: "input",
+                        message: "Enter the new value:",
+                        name: "newData",
+                        when: (response) => response.updateCol === "first_name" || response.updateCol === "last_name"
+                    },
+                    {
+                        type: "list",
+                        message: "Enter the new value:",
+                        name: "newData",
+                        choices: roles,
+                        when: (response) => response.updateCol === "role_id" 
+                    },
+                    {
+                        type: "list",
+                        message: "Enter the new value:",
+                        name: "newData",
+                        choices: function(){
+                            //add N/A option to employees for manager selection
+                            employees.push({name: "N/A", value: null});
+                            return employees;
+                        },
+                        when: (response) => response.updateCol === "manager_id" 
+                    }
+                    ])
                 .then(function(response){
-                    orm.create("employee", ["first_name", "last_name", "role_id", "manager_id"], [response.firstName, response.lastName, response.empRole, response.empManager], function(result) {
-                        console.log(`Created new employee: ${response.firstName} ${response.lastName} || Employee id: ${result.insertId}`);
+                    if(response.newData != null){
+                    orm.update("employee", response.updateCol + " = '" + response.newData + "'", "id=" + response.updateEmp , function(result) {
+                        console.log(`Updated employee id: ${response.updateEmp}  || ${response.updateCol}: ${response.newData}`);
                         promptUser();
-                    })
+                    })}
+                    else{ //remove quotes around response.newData so null manager is updated correctly as null, not the string 'null'
+                        orm.update("employee", response.updateCol + " = " + response.newData, "id=" + response.updateEmp , function(result) {
+                            console.log(`Updated employee id: ${response.updateEmp}  || ${response.updateCol}: ${response.newData}`);
+                            promptUser();
+                        })
+                    }
+                });
+                });
                 });
             break;
             case "Role":
@@ -187,8 +215,6 @@ function addData (table){
         case "Employee":
             //get list of existing employees for manager selection
             orm.getEmployees(function(employees) {
-            //add N/A option to employees for manager selection
-            employees.push({name: "N/A", value: null})
 
             //get roles for role selection
             orm.getRoles(function(roles) {
@@ -207,7 +233,11 @@ function addData (table){
                 type: "list",
                 message: "Who is the employee's manager (if applicable)?",
                 name: "empManager",
-                choices: employees
+                choices: function(){
+                    //add N/A option to employees for manager selection
+                    employees.push({name: "N/A", value: null});
+                    return employees;
+                },
             },
             {
                 type: "list",
