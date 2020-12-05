@@ -60,14 +60,20 @@ var orm = {
     },
 
     getEmployees: function(cb) {
-        var queryString = "SELECT dept_name FROM department";
+        var queryString = "SELECT id, first_name, last_name FROM employee";
         var choiceArray = [];
+        
 
         connection.query(queryString, function(err, result) {
             if (err) throw err;
 
             for (var i = 0; i < result.length; i++) {
-                choiceArray.push(result[i].dept_name);
+
+                let employee = {
+                    name: result[i].first_name + " " + result[i].last_name,
+                    value: result[i].id
+                }
+                choiceArray.push(employee);
             }
             cb(choiceArray);
         });  
