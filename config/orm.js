@@ -36,10 +36,26 @@ function objToSql(ob) {
 
 //The object relational mapping functions
 var orm = {
-    // The last variable cb represents the anonymous callback function
-    selectAll: function(tableInput, cb) {
-    var queryString = "SELECT * FROM ??";
-    connection.query(queryString, [tableInput], function(err, result) {
+    // Selects everything in the departments table
+    selectDeptartments: function(cb) {
+    var queryString = "SELECT * FROM department";
+    connection.query(queryString, function(err, result) {
+        if (err) throw err;
+        cb(result);
+        });
+    },
+
+    selectEmployees: function(cb) {
+    var queryString = "SELECT * FROM employee";
+    connection.query(queryString, function(err, result) {
+        if (err) throw err;
+        cb(result);
+        });
+    },
+
+    selectRoles: function(cb) {
+    var queryString = "SELECT * FROM role";
+    connection.query(queryString, function(err, result) {
         if (err) throw err;
         cb(result);
         });

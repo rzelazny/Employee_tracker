@@ -59,10 +59,26 @@ function promptUser() {
 
 //Function returns all data from a table
 function getData (table) {
-    orm.selectAll(table, function(result) {
-        console.table(result);
-        promptUser();
-    })
+    switch(table){
+        case "Department":
+            orm.selectDeptartments(function(result) {
+                console.table(result);
+                return promptUser();
+            })
+        break;
+        case "Employee":
+            orm.selectEmployees(function(result) {
+                console.table(result);
+                return promptUser();
+            })
+        break;
+        case "Role":
+            orm.selectRoles(function(result) {
+                console.table(result);
+                return promptUser();
+            })
+        break;
+    }
 };
 
 //Function updates existing data
