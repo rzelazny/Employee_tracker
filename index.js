@@ -170,27 +170,48 @@ function updateData (table){
                 });
             break;
             case "Role":
-                prompt([{
-                    type: "input",
-                        message: "What is the new role's title?",
-                        name: "newRole"
+                orm.getRoles(function(roles) {
+                    orm.getDepartments(function(departments) {
+                    prompt([{
+                        type: "list",
+                        message: "Which role is being updated?",
+                        name: "updateRole",
+                        choices: roles
+                    },
+                    {
+                        type: "list",
+                        message: "Which field is being updated?",
+                        name: "updateCol",
+                        choices: columns
                     },
                     {
                         type: "input",
-                        message: "What is the new role's salary?",
-                        name: "salary"
+                        message: "Enter the new value:",
+                        name: "newData",
+                        when: (response) => response.updateCol != "department_id" 
                     },
                     {
-                        type: "input",
-                        message: "What department is the new role in?",
-                        name: "department"
-                    }])
+                        type: "list",
+                        message: "Enter the new value:",
+                        name: "newData",
+                        choices: departments,
+                        when: (response) => response.updateCol === "department_id" 
+                    }
+                    ])
                     .then(function(response){
-                        orm.create("role", ["title", "salary", "department_id"], [response.newRole, response.salary, response.department], function(result) {
-                            console.log(`Created new role: ${response.newRole} in department ${response.department} || role id: ${result.insertId}`);
+                        orm.update("role", response.updateCol + " = '" + response.newData + "'", "id=" + response.updateRole , function(result) {
+                            console.log(`Updated role id: ${response.updateDept} || ${response.updateCol}: ${response.newData}`);
                             promptUser();
                         })
                     });
+                    });
+                    });
+                    // .then(function(response){
+                    //     orm.create("role", ["title", "salary", "department_id"], [response.newRole, response.salary, response.department], function(result) {
+                    //         console.log(`Created new role: ${response.newRole} in department ${response.department} || role id: ${result.insertId}`);
+                    //         promptUser();
+                    //     })
+                    // });
             break;
         }
     })
