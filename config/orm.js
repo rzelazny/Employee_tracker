@@ -47,11 +47,11 @@ var orm = {
 
     selectEmployees: function(cb) {
     var queryString = `SELECT em.id, em.first_name, em.last_name, rl.title, dp.dept_name, rl.salary FROM employee as em
-    LEFT JOIN role as rl
-    ON em.role_id = rl.id
-    LEFT JOIN department as dp
-    ON rl.department_id = dp.id
-    `;
+        LEFT JOIN role as rl
+        ON em.role_id = rl.id
+        LEFT JOIN department as dp
+        ON rl.department_id = dp.id`;
+
     connection.query(queryString, function(err, result) {
         if (err) throw err;
         cb(result);
@@ -60,9 +60,9 @@ var orm = {
 
     selectRoles: function(cb) {
     var queryString = `
-    SELECT rl.id, rl.title, rl.salary, dp.dept_name FROM role as rl
-    LEFT JOIN department as dp
-    ON rl.department_id = dp.id`;
+        SELECT rl.id, rl.title, rl.salary, dp.dept_name FROM role as rl
+        LEFT JOIN department as dp
+        ON rl.department_id = dp.id`;
 
     connection.query(queryString, function(err, result) {
         if (err) throw err;
@@ -70,7 +70,7 @@ var orm = {
         });
     },
 
-    //get list of department names and IDs
+    //get list of department names with IDs
     getDepartments: function(cb) {
         var queryString = "SELECT id, dept_name FROM department";
         var choiceArray = [];
@@ -172,11 +172,11 @@ var orm = {
     },
 
     //deletes a row in a given table with a given id
-    destroy: function(table, value, cb) {
+    destroy: function(table, id, cb) {
         var queryString = "DELETE FROM " + table;
     
         queryString += " WHERE id = '";
-        queryString += value + "'";
+        queryString += id + "'";
 
         console.log(queryString);
         connection.query(queryString, function(err, result) {
