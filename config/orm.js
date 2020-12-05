@@ -54,7 +54,11 @@ var orm = {
     },
 
     selectRoles: function(cb) {
-    var queryString = "SELECT * FROM role";
+    var queryString = `
+    SELECT rl.id, rl.title, rl.salary, dp.dept_name FROM role as rl
+    LEFT JOIN department as dp
+    ON rl.department_id = dp.id
+    `;
     connection.query(queryString, function(err, result) {
         if (err) throw err;
         cb(result);
