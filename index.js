@@ -333,7 +333,6 @@ function deleteData(table) {
                 choices: departments
                 })
             .then(function(response){
-                console.log(response.delDept)
                 orm.destroy("department", [response.delDept], function(result) {
                     console.log(`Deleted department: ${response.delDept}`);
                     promptUser();
@@ -351,7 +350,6 @@ function deleteData(table) {
                 choices: employees
             })
             .then(function(response){
-                console.log(response.delName);
                 orm.destroy("employee", [response.delName], function(result) {
                     console.log(`Deleted employee: ${response.delName}`);
                     promptUser();
