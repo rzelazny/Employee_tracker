@@ -67,10 +67,31 @@ function getData (table) {
             })
         break;
         case "Employee":
-            orm.selectEmployees(function(result) {
-                console.table(result);
-                return promptUser();
-            })
+            prompt([{
+                name: "sort",
+                type: "list",
+                message: "How should the data be sorted?",
+                choices: [
+                    "By EmployeeID",
+                    "By Manager"
+                ]
+            }
+            ])
+            .then(function(response) {
+                if(response.sort === "By EmployeeID"){
+                    orm.selectEmployees("id", function(result) {
+                        console.table(result);
+                        return promptUser();
+                    })
+                }
+                else{
+                    orm.selectEmployees("manager_id", function(result) {
+                        console.table(result);
+                        return promptUser();
+                    })
+                }
+            });
+            
         break;
         case "Role":
             orm.selectRoles(function(result) {

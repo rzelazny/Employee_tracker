@@ -23,7 +23,7 @@ var orm = {
     },
 
     //selects all employee data, joining the role and department tables
-    selectEmployees: function(cb) {
+    selectEmployees: function(order, cb) {
     var queryString = `SELECT em.id, em.first_name, em.last_name, rl.title, dp.dept_name, 
         IFNULL(CONCAT(em2.first_name, ' ', em2.last_name),'-') as Manager, rl.salary 
         FROM employee as em
@@ -32,7 +32,8 @@ var orm = {
         LEFT JOIN department as dp
         ON rl.department_id = dp.id
         LEFT JOIN employee as em2
-        ON em.manager_id = em2.id`;
+        ON em.manager_id = em2.id
+        ORDER BY em.` + order ;
     connection.query(queryString, function(err, result) {
         if (err) throw err;
         cb(result);
